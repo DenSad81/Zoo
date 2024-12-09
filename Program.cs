@@ -8,9 +8,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Random random = new Random();
-        AnimalMaker animalMaker = new AnimalMaker();
-        Zoo zoo = new Zoo( animalMaker);
+        Zoo zoo = new Zoo(new SomeAnimalsMaker());
         Game game = new Game();
         game.Play(zoo);
     }
@@ -76,9 +74,9 @@ public class Cell
 {
     private List<Animal> _animals = new List<Animal>();
 
-    public Cell(AnimalMaker animalMaker)
+    public Cell(SomeAnimalsMaker animalsMaker)
     {
-        _animals = animalMaker.CreateListAnimals();
+        _animals = animalsMaker.CreateListAnimals();
     }
 
     public void ShowAllData()
@@ -94,12 +92,15 @@ public class Cell
 public class Zoo
 {
     private List<Cell> _cells = new List<Cell>();
-    private int _quantityOfCell = 5;
+    private int _quantityOfCell = 666;
 
-    public Zoo( AnimalMaker animalMaker)
+    public Zoo(SomeAnimalsMaker animalsMaker)
     {
+        if (_quantityOfCell > animalsMaker.MaxQuantitiAnimals)
+            _quantityOfCell = animalsMaker.MaxQuantitiAnimals;
+
         for (int i = 0; i < _quantityOfCell; i++)
-            _cells.Add(new Cell(animalMaker));
+            _cells.Add(new Cell(animalsMaker));
     }
 
     public void ShowAllData()
@@ -135,40 +136,41 @@ public class Zoo
     }
 }
 
-public class AnimalMaker
+public class SomeAnimalsMaker
 {
-    public List<Animal> CreateListAnimals()
-    {
-        string[,] _types = new string[,] { { "monkey", "ii-ii" },
+    private string[,] _types = new string[,] { { "monkey", "ii-ii" },
                                                { "lion","rr-rr" },
                                                { "horse", "igo-go" },
                                                { "wolf", "gaw-gaw" },
                                                { "crocodile","ff-ff" },
                                                { "rabbit","piu-piu" } };
-        string[] _sexs = new string[] { "male", "female" };
-        int _maxAge = 15;
-        int _minAge = 1;
-        int _minQuantityAnimals = 2;
-        int _maxQuantityAnimals = 12;
 
+    public int MaxQuantitiAnimals => _types.GetLength(0);
+
+    public List<Animal> CreateListAnimals()
+    {
+        string[] sexs = new string[] { "male", "female" };
+        int maxAge = 15;
+        int minAge = 1;
+        int minQuantityAnimals = 2;
+        int maxQuantityAnimals = 12;
         int positionInArrayTypes = Utils.GenerateRandomNumber(0, _types.GetLength(0));
         string type = _types[positionInArrayTypes, 0];
         string sound = _types[positionInArrayTypes, 1];
-
-        int quantityOfAnimals = Utils.GenerateRandomNumber(_minQuantityAnimals, _maxQuantityAnimals);
+        int quantityOfAnimals = Utils.GenerateRandomNumber(minQuantityAnimals, maxQuantityAnimals);
 
         List<Animal> tempList = new List<Animal>();
 
         for (int i = 0; i < quantityOfAnimals; i++)
         {
-            int positionInArraySexs = Utils.GenerateRandomNumber(0, _sexs.Length);
-            string sex = _sexs[positionInArraySexs];
-            int age = Utils.GenerateRandomNumber(_minAge, _maxAge);
+            int positionInArraySexs = Utils.GenerateRandomNumber(0, sexs.Length);
+            string sex = sexs[positionInArraySexs];
+            int age = Utils.GenerateRandomNumber(minAge, maxAge);
 
             tempList.Add(new Animal(type, sex, sound, age));
         }
 
-        _types = Utils.DeleteElementInDoubleArray(_types, positionInArrayTypes);
+        Utils.DeleteElementInDoubleArray(ref _types, positionInArrayTypes);
         return tempList;
     }
 }
@@ -182,16 +184,15 @@ public static class Utils
         return s_random.Next(min, max);
     }
 
-    public static string[,] DeleteElementInDoubleArray(string[,] array, int positionOfElement)
+    public static  void DeleteElementInDoubleArray(ref string[,] array, int positionOfElement)
     {
         if (positionOfElement >= array.GetLength(0) || positionOfElement < 0)
         {
             Console.WriteLine("Incorrect index");
-            return null;
+            return;
         }
 
         string[,] arrayNew = new string[array.GetLength(0) - 1, array.GetLength(1)];
-
         int positionInArray = 0;
         int positionInNewArray = 0;
 
@@ -208,32 +209,25 @@ public static class Utils
             positionInArray++;
         }
 
-        return arrayNew;
+        array = arrayNew;
     }
 
-    public static string ReadString(string text = "")
+    static public string ReadString(string text = "")
     {
         Console.Write(text + " ");
-        string stringFromConsole = Console.ReadLine();
-        return stringFromConsole;
+        string tempString = Console.ReadLine().ToLower();
+        Console.WriteLine();
+        return tempString;
     }
 
-    public static int ReadInt(string text = "")
+    public static int ReadInt(string text = "", int minValue = int.MinValue, int maxValue = int.MaxValue)
     {
-        int digitToOut = 0;
-        bool isRun = true;
+        int number;
+        Console.Write(text + " ");
 
-        while (isRun)
-        {
+        while (int.TryParse(Console.ReadLine(), out number) == false || number > maxValue || number < minValue)
             Console.Write(text + " ");
-            string digitFromConsole = Console.ReadLine();
 
-            if (int.TryParse(digitFromConsole, out digitToOut))
-            {
-                isRun = false;
-            }
-        }
-
-        return digitToOut;
+        return number;
     }
 }
