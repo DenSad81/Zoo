@@ -22,6 +22,7 @@ public class Game
         const string CommandShowAnimalsInCell = "2";
         const string CommandShowAllCells = "3";
         const string CommandExit = "9";
+
         bool isRun = true;
 
         Console.WriteLine($"Menu: {CommandShowAllCellsTypes}-Show all cells types;");
@@ -138,12 +139,17 @@ public class Zoo
 
 public class AnimalsMaker
 {
-    private string[,] _types = new string[,] { { "monkey", "ii-ii" },
-                                               { "lion","rr-rr" },
-                                               { "horse", "igo-go" },
-                                               { "wolf", "gaw-gaw" },
-                                               { "crocodile","ff-ff" },
-                                               { "rabbit","piu-piu" } };
+    private string[,] _types;
+
+    public AnimalsMaker()
+    {
+        _types = new string[,] { { "monkey", "ii-ii" },
+                                 { "lion","rr-rr" },
+                                 { "horse", "igo-go" },
+                                 { "wolf", "gaw-gaw" },
+                                 { "crocodile","ff-ff" },
+                                 { "rabbit","piu-piu" } };
+    }
 
     public int MaxQuantitiAnimals => _types.GetLength(0);
 
@@ -184,7 +190,7 @@ public static class Utils
         return s_random.Next(min, max);
     }
 
-    public static  void DeleteElementInDoubleArray(ref string[,] array, int positionOfElement)
+    public static void DeleteElementInDoubleArray(ref string[,] array, int positionOfElement)
     {
         if (positionOfElement >= array.GetLength(0) || positionOfElement < 0)
         {
