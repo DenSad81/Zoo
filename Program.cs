@@ -8,7 +8,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Zoo zoo = new Zoo(new SomeAnimalsMaker());
+        Zoo zoo = new Zoo(new AnimalsMaker());
         Game game = new Game();
         game.Play(zoo);
     }
@@ -74,7 +74,7 @@ public class Cell
 {
     private List<Animal> _animals = new List<Animal>();
 
-    public Cell(SomeAnimalsMaker animalsMaker)
+    public Cell(AnimalsMaker animalsMaker)
     {
         _animals = animalsMaker.CreateListAnimals();
     }
@@ -94,7 +94,7 @@ public class Zoo
     private List<Cell> _cells = new List<Cell>();
     private int _quantityOfCell = 666;
 
-    public Zoo(SomeAnimalsMaker animalsMaker)
+    public Zoo(AnimalsMaker animalsMaker)
     {
         if (_quantityOfCell > animalsMaker.MaxQuantitiAnimals)
             _quantityOfCell = animalsMaker.MaxQuantitiAnimals;
@@ -136,7 +136,7 @@ public class Zoo
     }
 }
 
-public class SomeAnimalsMaker
+public class AnimalsMaker
 {
     private string[,] _types = new string[,] { { "monkey", "ii-ii" },
                                                { "lion","rr-rr" },
